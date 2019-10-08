@@ -364,6 +364,13 @@ public interface CloudFoundryOperations {
     void deleteService(String service);
 
     /**
+     * Synchronously delete cloud service.
+     *
+     * @param service name of service
+     */
+    void syncDeleteService(String service);
+
+    /**
      * Delete a service broker.
      *
      * @param name the service broker name

@@ -331,8 +331,14 @@ public class CloudFoundryClient implements CloudFoundryOperations {
         cc.deleteSecurityGroup(securityGroupName);
     }
 
+    @Override
     public void deleteService(String service) {
         cc.deleteService(service);
+    }
+
+    @Override
+    public void syncDeleteService(String service) {
+        cc.syncDeleteService(service);
     }
 
     @Override

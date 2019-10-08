@@ -492,6 +492,14 @@ public class CloudControllerClientImpl implements CloudControllerClient {
     }
 
     @Override
+    public void syncDeleteService(String serviceName) {
+        CloudService cloudService = getService(serviceName);
+        if (cloudService != null) {
+            doDeleteServiceSync(cloudService);
+        }
+    }
+
+    @Override
     public void deleteServiceBroker(String name) {
         CloudServiceBroker existingBroker = getServiceBroker(name);
         Assert.notNull(existingBroker, "Cannot update broker if it does not first exist");
@@ -1810,6 +1818,20 @@ public class CloudControllerClientImpl implements CloudControllerClient {
                         },
                         cloudService.getMeta().getGuid());
         waitForAsyncJobCompletion(response.getBody());
+    }
+
+    private void doDeleteServiceSync(CloudService cloudService) {
+        List<UUID> appIds = getAppsBoundToService(cloudService);
+        if (appIds.size() > 0) {
+            for (UUID appId : appIds) {
+                doUnbindService(appId, cloudService.getMeta().getGuid());
+            }
+        }
+        getRestTemplate().exchange(getUrl("/v2/service_instances/{guid}?async=false"),
+                HttpMethod.DELETE, HttpEntity.EMPTY,
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                },
+                cloudService.getMeta().getGuid());
     }
 
     private void doDeleteSpace(UUID spaceGuid) {

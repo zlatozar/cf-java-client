@@ -130,6 +130,8 @@ public interface CloudControllerClient {
 
     void deleteService(String service);
 
+    void syncDeleteService(String service);
+
     void deleteServiceBroker(String name);
 
     void deleteSpace(String spaceName);
